@@ -46,6 +46,14 @@ $servicesCredentials = [
         'key'       => '',
         'secret'    => '',
     ],
+    'flickr' => [
+        'key'       => '',
+        'secret'    => '',
+    ],
+    'vimeo' => [
+        'key'       => '',
+        'secret'    => '',
+    ],
 ];
 
 /**
