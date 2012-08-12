@@ -111,12 +111,12 @@ abstract class AbstractService implements ServiceInterface
             'oauth_token' => $token,
         ];
 
-        $authorizationHeader = ['Authorization' => $this->buildAuthorizationHeader($extraAuthenticationHeaders)];
-        $headers = array_merge($authorizationHeader, $this->getExtraOAuthHeaders());
-
         $bodyParams = [
             'oauth_verifier' => $verifier,
         ];
+
+        $authorizationHeader = ['Authorization' => $this->buildAuthorizationHeader($extraAuthenticationHeaders, $bodyParams)];
+        $headers = array_merge($authorizationHeader, $this->getExtraOAuthHeaders());
 
         $responseBody = $this->httpClient->retrieveResponse($this->getAccessTokenEndpoint(), $bodyParams, $headers);
 
@@ -209,11 +209,11 @@ abstract class AbstractService implements ServiceInterface
      * @param array $extraParameters
      * @return string
      */
-    protected function buildAuthorizationHeader(array $extraParameters = [])
+    protected function buildAuthorizationHeader(array $extraParameters = [], array $bodyParams = [])
     {
         $parameters = $this->getBasicAuthorizationHeaderInfo();
         $parameters = array_merge($parameters, $extraParameters);
-        $parameters['oauth_signature'] = $this->signature->getSignature($this->getRequestTokenEndpoint(), null, $parameters);
+        $parameters['oauth_signature'] = $this->signature->getSignature($this->getRequestTokenEndpoint(), $bodyParams, $parameters);
 
         $authorizationHeader = 'OAuth ';
         $delimiter = '';
