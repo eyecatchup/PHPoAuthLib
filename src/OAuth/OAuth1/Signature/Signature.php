@@ -65,7 +65,11 @@ class Signature implements SignatureInterface
     public function getSignature(UriInterface $uri, $requestBody = null, array $extraHeaders = [], $method = 'POST')
     {
         parse_str($uri->getQuery(), $queryStringData);
-        parse_str($requestBody, $bodyData);
+        if (!is_array($requestBody)) {
+            parse_str($requestBody, $bodyData);
+        } else {
+            $bodyData = $requestBody;
+        }
 
         $signatureData = [];
         foreach($extraHeaders as $key => $value) {
