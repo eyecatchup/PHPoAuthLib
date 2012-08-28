@@ -9,7 +9,7 @@
  * @copyright  Copyright (c) 2012 The authors
  * @license    http://www.opensource.org/licenses/mit-license.html  MIT License
  */
-use OAuth\OAuth1\Signature\Signature;
+use OAuth\OAuth1\Signature\VimeoSignature;
 use OAuth\OAuth1\Service\Vimeo;
 use OAuth\Common\Storage\Session;
 use OAuth\Common\Consumer\Credentials;
@@ -32,7 +32,7 @@ $credentials = new Credentials(
 );
 
 // setup the signature for the requests
-$signature = new Signature($credentials);
+$signature = new VimeoSignature($credentials);
 
 // Instantiate the google service using the credentials, http client and storage mechanism for the token
 $vimeoService = new Vimeo($credentials, $httpClientProvider(), $storage, $signature);
@@ -57,8 +57,9 @@ if( !empty( $_GET['oauth_token'] ) ) {
 } elseif( !empty($_GET['go'] ) && $_GET['go'] == 'go' ) {
     // extra request needed for oauth1 to request a request token :-)
     $token = $vimeoService->requestRequestToken();
-
+//print('<pre>');var_dump($token);print('</pre>');
     $url = $vimeoService->getAuthorizationUri(['oauth_token' => $token->getRequestToken()]);
+//print('<pre>');var_dump($url->getAbsoluteUri());print('</pre>'); die;
     header('Location: ' . $url);
 } else {
     $url = $currentUri->getRelativeUri() . '?go=go';
